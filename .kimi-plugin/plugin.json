@@ -1,0 +1,25 @@
+{
+  "$schema": "https://kimi.com/schemas/kimi.plugin.schema.json",
+  "name": "kimi-voiceover-video",
+  "version": "1.0.0",
+  "description": "Turn a voice recording into a fully animated, captioned, sound-designed short video. Built for Kimi Code CLI with a customizable brand that defaults to Kimi violet.",
+  "keywords": [
+    "video",
+    "voiceover",
+    "captions",
+    "animation",
+    "shorts",
+    "vertical-video",
+    "content-creator"
+  ],
+  "author": "Dancan254",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Kimi Voiceover Video",
+    "shortDescription": "Voice note in, animated vertical Short out",
+    "longDescription": "Drop in a voice note or to-camera take and get a polished 1080x1920 Short: local word-level transcription, kinetic typography, camera moves, images, synthesized sound design and a voice-ducked music bed. The agent guides brand setup on first run and asks before the expensive render steps.",
+    "developerName": "Dancan254",
+    "websiteURL": "https://github.com/Dancan254/kimi-voiceover-video"
+  }
+}

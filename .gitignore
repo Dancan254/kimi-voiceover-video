@@ -1,6 +1,12 @@
 # Dependencies
-scripts/node_modules/
-package-lock.json
+skills/*/scripts/node_modules/
+skills/*/scripts/package-lock.json
+
+# Downloaded assets (setup.sh fetches these)
+skills/*/assets/*.woff2
+skills/*/assets/*.css
+skills/*/assets/*.url
+skills/*/assets/gsap.min.js
 
 # Python
 __pycache__/
@@ -8,7 +14,7 @@ __pycache__/
 *.egg-info/
 
 # User brand / outputs
-brand.json
+skills/*/brand.json
 *.mp4
 *.wav
 *.mov
