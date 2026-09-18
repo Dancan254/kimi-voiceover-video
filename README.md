@@ -6,7 +6,7 @@ Drop in a voice note. Kimi transcribes it word by word, designs a shot list, bui
 kinetic typography and motion graphics timed to your words, adds synthesized sound design and a
 music bed that ducks under your voice, and renders a 1080×1920 Short.
 
-![preview](docs/preview.jpg)
+![demo](docs/demo.gif)
 
 No subscription editor, no uploads: transcription, rendering and audio all run on your machine.
 
