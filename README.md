@@ -10,6 +10,8 @@ music bed that ducks under your voice, and renders a 1080×1920 Short.
 
 No subscription editor, no uploads: transcription, rendering and audio all run on your machine.
 
+![pipeline](docs/pipeline.png)
+
 ---
 
 ## Install
