@@ -13,7 +13,9 @@ A Kimi Code CLI plugin that packages one skill:
 skills/kimi-voiceover-video/
 ├── SKILL.md                     workflow the agent follows at run time
 ├── brand.example.json           default brand (colours, fonts, handle)
-├── references/scene-blocks.md   scene catalogue, pacing rules, sound cues, safe zones
+├── references/
+│   ├── scene-blocks.md          scene catalogue, pacing rules, sound cues, safe zones
+│   └── shot-planning-prompt.md  prompt for reviewing the draft shot list
 ├── templates/
 │   └── composition.html         HTML/GSAP composition engine + demo shots
 └── scripts/
@@ -21,6 +23,7 @@ skills/kimi-voiceover-video/
     ├── init_brand.py            first-run answers → ~/.config/kimi-voiceover-video/brand.json
     ├── transcribe.py            faster-whisper, word-level timestamps
     ├── build_captions.py        applies fixes.json → words.js
+    ├── plan_shots.py            heuristically drafts a shot list from words.json
     ├── fill_template.py         brand + geometry + duration → work/index.html
     ├── extract_face.sh          to-camera video → face/fNNNNN.jpg, numbered by edit frame
     ├── render.js                stills | frames | cues | check, driven by window.renderAt(t)

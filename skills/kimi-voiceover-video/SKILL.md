@@ -130,7 +130,18 @@ Captions follow what was said, so an ad-libbed line stays; tell the user where t
 
 ## Step 4 — Shot list (confirm before building)
 
-Load `references/scene-blocks.md`. Write a shot table — one row per shot, cut on word times:
+First, let the planner draft the list from the transcript:
+
+```bash
+python3 SKILL_DIR/scripts/plan_shots.py "$work"
+```
+
+Writes `<work>/shots.json` with a heuristic proposal: shot times, block type, hit word, transition,
+and an image query. It is a draft — review it.
+
+Then load `references/scene-blocks.md` **and** `references/shot-planning-prompt.md`. Apply the rules
+from the prompt to refine the draft, then write the final shot table — one row per shot, cut on word
+times:
 
 ```
 #   in-out        line (spoken)                      block              sound
