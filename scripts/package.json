@@ -1,0 +1,9 @@
+{
+  "name": "kimi-voiceover-video-renderer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic frame renderer for the Kimi voiceover-video skill",
+  "dependencies": {
+    "playwright-core": "^1.61.1"
+  }
+}

@@ -1,0 +1,34 @@
+# Dependencies
+scripts/node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# User brand / outputs
+brand.json
+*.mp4
+*.wav
+*.mov
+*.m4a
+*.mp3
+work/
+frames/
+stills/
+face/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
