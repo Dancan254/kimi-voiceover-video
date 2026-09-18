@@ -78,6 +78,10 @@ Useful follow-ups:
 - **Music bed** that ducks under the voice and drops before the final line
 - **Film finish**: grain, vignette, loudness normalised to −14 LUFS
 - **QA gates**: Kimi reviews a contact sheet before the full render and checks the encoded file
+- **Hook extraction**: drop in a long recording and the skill finds the best 30–90s segment
+- **Auto-image sourcing**: searches Wikimedia Commons and Simple Icons, then records credits
+- **Project save / reload**: iterate on pacing or branding without re-transcribing
+- **Three formats**: vertical (9:16), landscape (16:9), square (1:1)
 
 ---
 
@@ -92,9 +96,11 @@ To set the brand yourself instead:
 python3 skills/kimi-voiceover-video/scripts/init_brand.py --handle @yourhandle --preset kimi-violet
 ```
 
-Presets: `kimi-violet`, `midnight-pink`, `carbon-cyan`, `ink-amber`, `violet-signal`. Pass custom
-`--accent` and `--bg` hex values to roll your own. The brand is written to
-`~/.config/kimi-voiceover-video/brand.json`.
+Presets: `kimi-violet`, `tiktok-neon`, `youtube-dark`, `minimal-light`, `sports-energy`,
+`midnight-pink`, `carbon-cyan`, `ink-amber`, `violet-signal`. Pass custom `--accent` and `--bg` hex
+values to roll your own. The brand is written to `~/.config/kimi-voiceover-video/brand.json`.
+
+Output formats: `vertical` 1080×1920 (default), `landscape` 1920×1080, or `square` 1080×1080.
 
 ---
 

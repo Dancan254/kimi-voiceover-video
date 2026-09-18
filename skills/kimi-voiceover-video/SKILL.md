@@ -30,7 +30,7 @@ block catalogue, the pacing rules, and the sound-cue vocabulary.
 |-------|----------|---------|
 | `audio` or `video` | Yes | `~/Downloads/voice-note.m4a` · a to-camera recording `~/Movies/take-1.mp4` |
 | `script` | No | the script, plain or with `[FACE]` / `[VOICE]` sections; captions are checked against it. Sections start on their own line with exactly `[FACE]` or `[VOICE]` |
-| `format` | No | `vertical` 1080x1920 (default) · `landscape` 1920x1080 |
+| `format` | No | `vertical` 1080x1920 (default) · `landscape` 1920x1080 · `square` 1080x1080 |
 | `music` | No | `synth` (default) · path to a royalty-free track · `none` |
 | `model` | No | `small` (default) · `base` for clean audio, ~2x faster |
 | `vocab` | No | names and terms the speaker uses: `"Kubernetes, Kafka, Jane Doe"` |
@@ -54,13 +54,16 @@ so ask before rendering. Four questions, each with its default, answered in one 
 | Ask | Default |
 |---|---|
 | Handle shown in the corner | required, no default |
-| Look: `kimi-violet`, `midnight-pink`, `carbon-cyan`, `ink-amber`, `violet-signal`, or their own accent and background | `kimi-violet` |
+| Look: `kimi-violet`, `tiktok-neon`, `youtube-dark`, `minimal-light`, `sports-energy`, `midnight-pink`, `carbon-cyan`, `ink-amber`, `violet-signal`, or their own accent and background | `kimi-violet` |
 | Fonts: display and code | `Archivo` / `Geist Mono` |
 | Where finished videos go | `~/kimi-voiceover-videos` |
 
 ```bash
 python3 SKILL_DIR/scripts/init_brand.py --handle @theirhandle [--preset kimi-violet] \
   [--accent '#8b5cf6' --bg '#0f0f1a'] [--heading Archivo --mono 'Geist Mono'] [--output-dir ~/kimi-voiceover-videos]
+
+Presets: `kimi-violet`, `tiktok-neon`, `youtube-dark`, `minimal-light`, `sports-energy`,
+`midnight-pink`, `carbon-cyan`, `ink-amber`, `violet-signal`.
 ```
 
 It derives the surface and border colours, checks the fonts against Google Fonts, and writes
@@ -105,7 +108,24 @@ the model, so it may sit at low CPU for a few minutes.
 
 ---
 
-## Step 3 — Proofread the captions
+## Step 3 — Extract the hook (optional, for long recordings)
+
+If the recording is longer than ~90 seconds, find the best segment for a Short before planning shots.
+
+```bash
+python3 SKILL_DIR/scripts/extract_hook.py "$work" <audio> --target 60
+python3 SKILL_DIR/scripts/extract_segment.py <audio> "$work"
+```
+
+`extract_hook.py` writes `hook.json` with the highest-scoring window. `extract_segment.py` extracts
+that audio/video segment to `<work>/hook<ext>`. Then transcribe the hook segment instead of the full
+file, or let `plan_shots.py` shift the full transcript to the hook window automatically.
+
+Skip this step if the user already provided a Short-length clip.
+
+---
+
+## Step 4 — Proofread the captions
 
 Captions are burned in. Scan `transcript.txt` for misheard words — proper nouns and technical terms
 break first (observed: `San Micro Systems` → Sun Microsystems, `Ok` → Oak, `CNC++` → C/C++,
@@ -128,7 +148,7 @@ Captions follow what was said, so an ad-libbed line stays; tell the user where t
 
 ---
 
-## Step 4 — Shot list (confirm before building)
+## Step 5 — Shot list (confirm before building)
 
 First, let the planner draft the list from the transcript:
 
@@ -151,7 +171,7 @@ times:
 ```
 
 Rules: a new shot every 1–4 seconds; a hit only on a word that deserves it; captions hidden whenever
-the spoken word *is* the visual. Find images before the table is final (Step 5).
+the spoken word *is* the visual. Find images before the table is final (Step 6).
 
 With a `video`, the first and last rows are face shots (*Face hook*, *Face sign-off*). The hook runs
 from 0 to the last word of the script's first `[FACE]` section (no script: the first sentence). The
@@ -162,29 +182,52 @@ later.
 
 ---
 
-## Step 5 — Source images
+## Step 6 — Source images
 
-Prefer Wikimedia Commons (free licences, stable URLs). Search, download, then **look at every file
-before using it** — search results lie (a "Star7" search returned an unrelated party photo).
+Run the media finder against the image queries in `shots.json`:
+
+```bash
+python3 SKILL_DIR/scripts/find_media.py "$work" --max-per-query 3
+```
+
+It searches Wikimedia Commons and Simple Icons, downloads up to 3 candidates per query into
+`<work>/assets/`, and writes `<work>/credits.json` with source, author, and licence for every file.
+
+**Look at every file before using it** — search results lie. If you cannot view images, list each
+candidate with its source URL and what you expect it to show, and ask the user to confirm before
+Step 7.
+
+To search manually, use the Commons API or Simple Icons CDN directly:
 
 ```bash
 curl -s -A "kimi-voiceover-video-skill/1.0" "https://commons.wikimedia.org/w/api.php?action=query&list=search&srnamespace=6&srlimit=10&format=json&srsearch=<query>"
-curl -sL -A "kimi-voiceover-video-skill/1.0" -o <work>/assets/<name> "https://commons.wikimedia.org/wiki/Special:FilePath/<File_Name.jpg>"
 ```
-
-Logos: `https://cdn.jsdelivr.net/npm/simple-icons@13/icons/<slug>.svg`. Keep a credits list — file
-name, author, licence — for the report.
-
-If you cannot view images, never place one unseen: list each file with its source URL and what you
-expect it to show, and ask the user to confirm before Step 6.
 
 ---
 
-## Step 6 — Author the composition
+## Step 7 — Save project state
+
+After the shot list and images are approved, save the project so the user can iterate later without
+re-transcribing or re-sourcing images:
+
+```bash
+python3 SKILL_DIR/scripts/save_project.py "$work" \
+  --source <audio> --brand <brand.json> --format vertical --music synth --approved
+```
+
+Writes `<work>/project.json`. To resume later:
+
+```bash
+python3 SKILL_DIR/scripts/load_project.py <work>/project.json [new-work-dir]
+```
+
+---
+
+## Step 8 — Author the composition
 
 ```bash
 python3 SKILL_DIR/scripts/fill_template.py "$work" <duration> --format vertical
-# or --format landscape for 1920x1080
+# or --format landscape for 1920x1080, or --format square for 1080x1080
 ```
 
 `<duration>` = last word end + ~2.5s for the outro; with a `video`, last word end + 0.5s, and never past
@@ -214,7 +257,7 @@ for the expanded width — a vertical frame fits ~6 characters at 250px.
 
 ---
 
-## Step 7 — QA stills (loop until clean)
+## Step 9 — QA stills (loop until clean)
 
 Pick one timestamp per shot, at the moment of densest content:
 
@@ -240,11 +283,11 @@ off a face or subject, an image that does not match the line, and layouts that f
 badly. Fix, re-render only the affected stills, and look again.
 
 If you cannot view images, say so in the report and ask the user to look at `contact.jpg` before
-Step 9. Do not start Step 9 with a known defect — a full render costs minutes.
+Step 10. Do not start Step 10 with a known defect — a full render costs minutes.
 
 ---
 
-## Step 8 — Sound
+## Step 10 — Sound
 
 ```bash
 node SKILL_DIR/scripts/render.js cues "$work"/index.html "$work"/cues.json
@@ -257,14 +300,14 @@ of the last big hit. Optional pacing flags:
 - `--drums-from <t>` — bring the drums in at `<t>` seconds.
 - `--quiet <a>:<b>` — duck the music between `a` and `b` seconds (repeatable).
 
-With `music` set to a file, pass `--no-music` and give that file to Step 10. With `none`, pass
+With `music` set to a file, pass `--no-music` and give that file to Step 11. With `none`, pass
 `--no-music` and nothing else.
 
 You cannot hear the result. Say so in the report and ask the user to listen.
 
 ---
 
-## Step 9 — Render frames
+## Step 11 — Render frames
 
 ```bash
 bash SKILL_DIR/scripts/render-frames.sh "$work"/index.html "$work"/frames <duration> [workers] [from_frame to_frame]
@@ -275,7 +318,7 @@ a single shot after a fix; each bound is its own argument, so it is safe under z
 
 ---
 
-## Step 10 — Mix and encode
+## Step 12 — Mix and encode
 
 ```bash
 out="<brand.output.dir>/<slug>/<slug>.mp4"
@@ -288,7 +331,7 @@ past 800 MB).
 
 ---
 
-## Step 11 — Verify, then report
+## Step 13 — Verify, then report
 
 Before reporting, extract a frame from the **encoded file** at a shot you changed, read it, and check
 the duration and size:

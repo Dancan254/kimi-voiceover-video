@@ -37,7 +37,19 @@ def load_words(work: Path):
         print(f"No words.json in {work}", file=sys.stderr)
         print("Next: run transcribe.py with --outdir pointing at this directory", file=sys.stderr)
         sys.exit(1)
-    return json.loads(words_path.read_text(encoding="utf-8"))
+    words = json.loads(words_path.read_text(encoding="utf-8"))
+
+    hook_path = work / "hook.json"
+    if hook_path.is_file():
+        hook = json.loads(hook_path.read_text(encoding="utf-8"))
+        start = hook.get("start", 0.0)
+        end = hook.get("end", float("inf"))
+        words = [w for w in words if start <= w["s"] <= end]
+        # Shift times so the hook starts at 0 for the rendered composition
+        for w in words:
+            w["s"] = round(w["s"] - start, 2)
+            w["e"] = round(w["e"] - start, 2)
+    return words
 
 
 def build_windows(words):

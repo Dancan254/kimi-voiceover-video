@@ -25,6 +25,10 @@ PRESETS = {
     "carbon-cyan": {"bg": "#0d1117", "accent": "#21d4c2", "textBody": "#E4EAF2", "textMuted": "#7D8DA5"},
     "ink-amber": {"bg": "#14110d", "accent": "#f5a524", "textBody": "#EDE6DA", "textMuted": "#9A8C76"},
     "violet-signal": {"bg": "#100e1b", "accent": "#8b5cf6", "textBody": "#E8E6F2", "textMuted": "#8079A3"},
+    "tiktok-neon": {"bg": "#050505", "accent": "#ff0050", "textBody": "#ffffff", "textMuted": "#00f2ea"},
+    "youtube-dark": {"bg": "#0f0f0f", "accent": "#ff0000", "textBody": "#f1f1f1", "textMuted": "#aaaaaa"},
+    "minimal-light": {"bg": "#f5f5f7", "accent": "#0071e3", "textBody": "#1d1d1f", "textMuted": "#86868b"},
+    "sports-energy": {"bg": "#0a0a0a", "accent": "#ff6b00", "textBody": "#ffffff", "textMuted": "#00d4aa"},
 }
 
 FONT_URLS = {

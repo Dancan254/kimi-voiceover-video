@@ -17,6 +17,7 @@ SKILL_DIR = Path(__file__).resolve().parent.parent
 FORMATS = {
     "vertical": {"width": 1080, "height": 1920, "captionTop": 1500},
     "landscape": {"width": 1920, "height": 1080, "captionTop": 880},
+    "square": {"width": 1080, "height": 1080, "captionTop": 900},
 }
 
 
@@ -34,7 +35,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("work", type=Path)
     parser.add_argument("duration", type=float)
-    parser.add_argument("--format", choices=FORMATS, default="vertical")
+    parser.add_argument("--format", choices=list(FORMATS), default="vertical")
     parser.add_argument("--brand", type=Path, default=None)
     args = parser.parse_args()
 

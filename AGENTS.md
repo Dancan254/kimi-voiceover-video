@@ -20,10 +20,16 @@ skills/kimi-voiceover-video/
 │   └── composition.html         HTML/GSAP composition engine + demo shots
 └── scripts/
     ├── setup.sh                 dependency check, playwright-core + Chromium, GSAP, fonts
+    ├── setup-all.sh             high-level setup wrapper
     ├── init_brand.py            first-run answers → ~/.config/kimi-voiceover-video/brand.json
     ├── transcribe.py            faster-whisper, word-level timestamps
     ├── build_captions.py        applies fixes.json → words.js
+    ├── extract_hook.py          find best 30–90s segment from long recordings
+    ├── extract_segment.py       extract hook audio/video segment
     ├── plan_shots.py            heuristically drafts a shot list from words.json
+    ├── find_media.py            search Commons + Simple Icons, download candidates, write credits
+    ├── save_project.py          snapshot project state to project.json
+    ├── load_project.py          restore project state from project.json
     ├── fill_template.py         brand + geometry + duration → work/index.html
     ├── extract_face.sh          to-camera video → face/fNNNNN.jpg, numbered by edit frame
     ├── render.js                stills | frames | cues | check, driven by window.renderAt(t)
@@ -40,7 +46,7 @@ read `SKILL.md` directly.
 
 - **Required:** a shell, file writing, reading text output. Every script prints a one-line result and a
   `Next:` line, so an agent can follow the workflow from stdout alone.
-- **Optional:** vision. Only Step 5 (judging a downloaded image) and Step 7 (reading the contact sheet)
+- **Optional:** vision. Only Step 6 (judging downloaded images) and Step 9 (reading the contact sheet)
   benefit. Both have a documented text path: list images for the user to confirm, and `render.js check`,
   which measures every shot and reports defects as text.
 - **Never assumed:** audio. Nothing can hear the mix, so the workflow always asks the user to listen.
