@@ -257,18 +257,17 @@ for the expanded width — a vertical frame fits ~6 characters at 250px.
 
 ---
 
-## Step 9 — QA stills (loop until clean)
+## Step 9 — QA stills & thumbnail (loop until clean)
 
-Pick one timestamp per shot, at the moment of densest content:
+Generate one preview still per shot automatically, choosing the hit word when there is one and the
+midpoint otherwise:
 
 ```bash
-node SKILL_DIR/scripts/render.js stills "$work"/index.html "$work"/stills 0.6,2.4,4.9,…
-bash SKILL_DIR/scripts/contact-sheet.sh "$work"/stills "$work"/contact.jpg
+python3 SKILL_DIR/scripts/preview_stills.py "$work"
 ```
 
-Pass timestamps as a comma-separated list with **no spaces**; spaces parse as `NaN`.
-
-Measure first — this needs no eyes and runs in seconds:
+This renders the frames and tiles them into `<work>/contact.jpg`. Then measure first — this needs no
+eyes and runs in seconds:
 
 ```bash
 node SKILL_DIR/scripts/render.js check "$work"/index.html ["$work"/check.json]
@@ -342,6 +341,15 @@ ffprobe -v error -show_entries format=duration,size -of compact <out.mp4>
 ```
 
 A still rendered from the HTML is not proof the video contains the fix.
+
+Also generate posting thumbnails from the best preview still:
+
+```bash
+python3 SKILL_DIR/scripts/make_thumbnail.py "$work"
+```
+
+Writes `<work>/thumbnail_vertical.jpg` (1080×1920) and `<work>/thumbnail_square.jpg` (1080×1080).
+Pass `--source <still.jpg>` to override the auto-selected shot.
 
 ```
 <slug>.mp4 · 1080x1920 · 108.2s · 112 MB · -14.7 LUFS

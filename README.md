@@ -82,6 +82,8 @@ Useful follow-ups:
 - **Auto-image sourcing**: searches Wikimedia Commons and Simple Icons, then records credits
 - **Project save / reload**: iterate on pacing or branding without re-transcribing
 - **Three formats**: vertical (9:16), landscape (16:9), square (1:1)
+- **Auto-preview stills**: one frame per shot, hit-word timed, before the expensive render
+- **Auto-thumbnails**: vertical and square cover images generated from the best shot
 
 ---
 

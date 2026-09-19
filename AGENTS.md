@@ -35,6 +35,8 @@ skills/kimi-voiceover-video/
     ├── render.js                stills | frames | cues | check, driven by window.renderAt(t)
     ├── render-frames.sh         parallel frame rendering
     ├── contact-sheet.sh         stills → one review image
+    ├── preview_stills.py        render one still per shot and build a contact sheet
+    ├── make_thumbnail.py        best still → vertical + square thumbnail JPGs
     ├── synth_audio.py           cues.json → sfx.wav + music.wav
     └── mix-encode.sh            voice + ducked music + SFX → mp4
 ```
