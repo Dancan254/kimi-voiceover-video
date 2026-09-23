@@ -113,6 +113,13 @@ def stamp():
     return smooth(rng.standard_normal(len(t)), 25) * np.exp(-t * 18) * 0.9
 
 
+def shutter():
+    t = t_axis(0.09)
+    click = smooth(rng.standard_normal(len(t)), 8) * np.exp(-t * 300) * 0.5
+    tick = np.sin(2 * np.pi * 3200 * t) * np.exp(-t * 180) * 0.12
+    return click + tick
+
+
 def error():
     t = t_axis(0.22)
     return np.sign(np.sin(2 * np.pi * 180 * t)) * np.exp(-t * 14) * 0.05
@@ -142,6 +149,8 @@ def build_sfx(cues, samples):
             place(sfx, ding(), at)
         elif kind == "stamp":
             place(sfx, stamp(), at)
+        elif kind == "shutter":
+            place(sfx, shutter(), at)
         elif kind == "error":
             place(sfx, error(), at)
         else:

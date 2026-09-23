@@ -24,9 +24,13 @@ Your job:
 - **Match the block to the line.** A definition or key noun → `kinetic-slam`; a wrong assumption →
   `strike-through`; a year/number → `counter`; code/error → `terminal`; historical line → `vhs`;
   list of items → `montage` or `logo-wall`; final line → `outro`.
-- **Transitions:** use `whip` to move the story forward, `zoom` for reveals/new chapters, `fade` for
-  reflective beats, hard cut for fast back-to-back shots.
-- **Image queries** should be concrete enough to search (person name, product name, logo, era). Drop
+- **Match the media to the line.** Person/artefact → `image_query`; reaction/emotion → `gif_query`;
+  process/ambience → `clip_query`; a joke the user would get → their own file via `local_media`.
+  At most one or two meme beats per video.
+- **Transitions:** use `whip` to move the story forward, `zoom` for reveals/new chapters, `glitch`
+  for hard topic switches or error beats, `fade` for reflective beats, hard cut for fast
+  back-to-back shots.
+- **Media queries** should be concrete enough to search (person name, product name, logo, era). Drop
   the query if the shot is pure typography.
 
 ---
@@ -42,6 +46,7 @@ Show the user this exact format:
 03  6.10-8.30     Back in the early 1990s            vhs + counter      tick, hit@7.20
 ```
 
-Then list every `image_query` with its source plan (e.g., Wikimedia Commons search term).
+Then list every media query (`image_query`, `gif_query`, `clip_query`, `local_media`) with its
+source plan (e.g., Wikimedia Commons search term).
 
 Do not start `fill_template.py` or rendering until the user says yes.

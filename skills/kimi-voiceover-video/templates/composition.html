@@ -21,6 +21,7 @@ html,body{width:var(--W);height:var(--H);overflow:hidden;background:#07070d;font
 .glow{position:absolute;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 35%,transparent),transparent 65%)}
 .photo{position:absolute;overflow:hidden}
 .photo img{width:100%;height:100%;object-fit:cover}
+.clip{position:absolute;object-fit:cover}
 .face{background:#000}
 .face>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .badge{display:inline-block;font-family:"{{brand.fonts.mono}}",monospace;font-size:34px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:14px;padding:14px 28px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
@@ -40,15 +41,34 @@ html,body{width:var(--W);height:var(--H);overflow:hidden;background:#07070d;font
 .logo{width:290px;height:290px;display:flex;align-items:center;justify-content:center}
 .logo img{width:110px;height:110px;filter:invert(1)}
 .pkt{position:absolute;width:34px;height:34px;border-radius:50%;background:var(--accent);box-shadow:0 0 30px var(--accent)}
+.polaroid{position:absolute;background:#f5f2ea;padding:26px 26px 96px;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.polaroid img{width:100%;display:block}
+.polaroid .cap{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-family:"{{brand.fonts.mono}}",monospace;color:#1c1c1c;font-size:30px}
+.tape{position:absolute;width:220px;height:64px;background:rgba(255,255,255,.45);transform:rotate(-6deg);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.vf{position:absolute;inset:80px;pointer-events:none}
+.vf i{position:absolute;width:90px;height:90px;border:6px solid rgba(255,255,255,.85)}
+.vf i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0}
+.vf i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0}
+.vf i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0}
+.vf i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0}
+.rec{position:absolute;top:160px;left:130px;display:flex;align-items:center;gap:18px;font-family:"{{brand.fonts.mono}}",monospace;font-size:44px;letter-spacing:.22em;color:#fff}
+.rec i{width:34px;height:34px;border-radius:50%;background:var(--red);box-shadow:0 0 24px var(--red)}
+.tc{position:absolute;bottom:170px;left:0;right:0;text-align:center;font-family:"{{brand.fonts.mono}}",monospace;font-size:40px;letter-spacing:.16em;color:rgba(255,255,255,.85)}
+.facebubble{position:absolute;width:300px;height:300px;border-radius:50%;overflow:hidden;border:8px solid var(--accent);box-shadow:0 30px 80px rgba(0,0,0,.6);z-index:20}
+.facebubble img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 55%,rgba(0,0,0,.65));z-index:80}
 #grain{position:absolute;inset:0;width:var(--W);height:var(--H);opacity:.09;mix-blend-mode:screen;z-index:81;image-rendering:pixelated}
 #flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:82;mix-blend-mode:overlay}
 #pinkflash{position:absolute;inset:0;background:var(--accent);opacity:0;z-index:82;mix-blend-mode:screen}
 #captions{position:absolute;left:60px;right:60px;top:{{captionTop}}px;z-index:90;display:flex;justify-content:center}
-#capbox{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;font-size:74px;font-weight:800;font-stretch:75%;letter-spacing:-.01em;line-height:1.02;text-align:center;text-transform:uppercase}
-#capbox span{color:#fff;position:relative;text-shadow:0 6px 30px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.9);opacity:.55}
-#capbox span.on,#capbox span.now{opacity:1}
-#capbox span.now::before{content:"";position:absolute;inset:4px -10px -2px;background:var(--accent);border-radius:14px;z-index:-1}
+#capbox{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;font-size:74px;font-weight:800;font-stretch:75%;letter-spacing:-.01em;line-height:1.02;text-align:center}
+#capbox span{color:#fff;position:relative;display:inline-block;transform-origin:50% 80%;text-shadow:0 6px 30px rgba(0,0,0,.9),0 2px 4px rgba(0,0,0,.9)}
+#capbox.fireship span.now,#capbox.fireship span.kw{color:var(--accent)}
+#capbox.classic{text-transform:uppercase}
+#capbox.classic span{opacity:.55}
+#capbox.classic span.on,#capbox.classic span.now{opacity:1}
+#capbox.classic span.now{color:#fff}
+#capbox.classic span.now::before{content:"";position:absolute;inset:4px -10px -2px;background:var(--accent);border-radius:14px;z-index:-1}
 #prog{position:absolute;left:0;bottom:0;height:10px;background:var(--accent);z-index:95;box-shadow:0 0 20px var(--accent)}
 #sig{position:absolute;left:0;right:0;top:92px;text-align:center;font-family:"{{brand.fonts.mono}}",monospace;font-size:30px;color:rgba(255,255,255,.55);z-index:95}
 #sig b{color:var(--accent)}
@@ -58,17 +78,16 @@ html,body{width:var(--W);height:var(--H);overflow:hidden;background:#07070d;font
 <!-- BEGIN SHOTS -->
 
 <section class="shot" id="s01">
-  <div class="glow" style="width:1400px;height:1400px;left:-160px;top:200px"></div>
-  <div class="cx kick" id="s01k" style="top:420px">Did you know</div>
-  <div class="cx xl" id="s01a" style="top:540px;font-size:250px">JAVA</div>
-  <div class="cx xl" id="s01b" style="top:840px;font-size:92px;line-height:1.05">wasn't built for <span style="position:relative;display:inline-block" class="pink">the web?<span class="strike" id="s01s"></span></span></div>
+  <div class="vf"><i></i><i></i><i></i><i></i></div>
+  <div class="rec"><i id="s01rec"></i>REC</div>
+  <div class="tc" id="s01tc"></div>
+  <div class="cx kick" id="s01k" style="top:560px">Did you know</div>
+  <div class="cx xl" id="s01a" style="top:700px;font-size:280px">JAVA</div>
 </section>
 
 <section class="shot" id="s02">
   <div class="gridbg" id="s02g"></div>
-  <div class="cx xl" id="s02b" style="top:660px;font-size:96px">a completely</div>
-  <div class="cx xl" id="s02c" style="top:790px;font-size:136px"><span class="hl"><i id="s02hl"></i>DIFFERENT</span></div>
-  <div class="cx xl" id="s02d" style="top:960px;font-size:96px">problem.</div>
+  <div class="cx xl" id="s02b" style="top:720px;font-size:104px;line-height:1.1">wasn't built for <span style="position:relative;display:inline-block" class="pink">the web?<span class="strike" id="s02s"></span></span></div>
 </section>
 
 <section class="shot" id="s03" style="background:#08080f">
@@ -89,7 +108,7 @@ html,body{width:var(--W);height:var(--H);overflow:hidden;background:#07070d;font
 <script src="vendor/gsap.min.js"></script>
 <script src="words.js"></script>
 <script>
-const D = {{duration}}, E = "power2.out", EI = "power2.inOut", EX = "expo.out";
+const D = {{duration}}, E = "power2.out", EX = "expo.out";
 const tl = gsap.timeline({paused:true});
 const SFX = [];
 const q = s => document.querySelector(s);
@@ -105,6 +124,16 @@ function shot(id, s, e, enter){
   if(enter === "whipUp"){ tl.fromTo("#"+id,{yPercent:30,filter:"blur(30px)"},{yPercent:0,filter:"blur(0px)",duration:.28,ease:EX},s); SFX.push({t:s-.12,type:"whoosh"}); }
   if(enter === "zoom"){ tl.fromTo("#"+id,{scale:1.5,filter:"blur(24px)",opacity:0},{scale:1,filter:"blur(0px)",opacity:1,duration:.35,ease:EX},s); SFX.push({t:s-.1,type:"whoosh"}); }
   if(enter === "fade"){ tl.fromTo("#"+id,{opacity:0},{opacity:1,duration:.5,ease:E},s); }
+  if(enter === "glitch"){
+    tl.set("#"+id,{opacity:0},s);
+    tl.to("#"+id,{keyframes:[
+      {opacity:1,x:-40,filter:"drop-shadow(12px 0 rgba(255,0,80,.9)) drop-shadow(-12px 0 rgba(0,220,255,.9))",duration:.05},
+      {x:26,duration:.05},
+      {x:-12,duration:.05},
+      {x:0,filter:"drop-shadow(0 0 rgba(255,0,80,0)) drop-shadow(0 0 rgba(0,220,255,0))",duration:.12},
+    ],ease:"none"},s);
+    SFX.push({t:s-.08,type:"whoosh"});
+  }
 }
 function hit(t, power=1){
   SFX.push({t,type:"hit",power});
@@ -120,6 +149,12 @@ function rise(sel, t, d=.45){ tl.fromTo(sel,{y:70,opacity:0},{y:0,opacity:1,dura
 function pop(sel, t){ tl.fromTo(sel,{scale:.4,opacity:0},{scale:1,opacity:1,duration:.4,ease:"back.out(2)"},t); SFX.push({t,type:"pop"}); }
 function stamp(sel, t){ tl.fromTo(sel,{scale:3,opacity:0},{scale:1,opacity:1,duration:.2,ease:EX},t); SFX.push({t,type:"stamp"}); }
 function drift(sel, s, e, from, to){ tl.fromTo(sel,from,{...to,duration:e-s,ease:"none"},s); }
+function stagger(sel, t, gap=.09){
+  document.querySelectorAll(sel).forEach((el,i)=>{
+    tl.fromTo(el,{scale:.4,opacity:0},{scale:1,opacity:1,duration:.4,ease:"back.out(2)"},t+i*gap);
+    SFX.push({t:t+i*gap,type:"pop"});
+  });
+}
 
 const TYPERS = [], COUNTERS = [];
 function typer(el, text, s, e){ TYPERS.push({el:q(el),text,s,e}); SFX.push({t:s,type:"type",dur:e-s}); }
@@ -128,39 +163,78 @@ function counter(el, from, to, s, e){ COUNTERS.push({el:q(el),from,to,s,e}); SFX
 // Camera frames come from extract_face.sh, numbered by edit frame, so seeking stays frame-exact
 const FACES = [];
 function faceCam(id, s, e, enter){ shot(id, s, e, enter); FACES.push({img:q("#"+id+">img"),s,e}); }
+// Circular face overlay on b-roll; s/e must sit inside an extract_face.sh range
+function faceBubble(sel, s, e){ FACES.push({img:q(sel),s,e}); }
+
+// Video b-roll: find_media.py pre-converts gifs/clips to webm; seeking per frame keeps them
+// frame-exact (a .gif embedded directly would play on wall-clock time and break determinism)
+const CLIPS = [];
+function clip(sel, s, e, offset=0){ CLIPS.push({el:q(sel),s,e,offset}); }
+function seekClip(el, target){
+  return new Promise(res => {
+    const done = () => { el.removeEventListener("seeked", done); res(); };
+    el.addEventListener("seeked", done);
+    el.currentTime = target;
+  });
+}
+function renderClips(t){
+  const jobs = [];
+  CLIPS.forEach(({el,s,e,offset})=>{
+    if(!(t>=s && t<e)) return;
+    if(el.error) throw new Error(`clip failed to load: ${el.getAttribute("src")}`);
+    const ready = el.readyState >= 1 ? Promise.resolve() : new Promise((res, rej) => {
+      el.addEventListener("loadedmetadata", res, {once:true});
+      el.addEventListener("error", () => rej(new Error(`clip failed to load: ${el.getAttribute("src")}`)), {once:true});
+    });
+    jobs.push(ready.then(() => {
+      let target = offset + (t - s);
+      if(el.duration > 0) target %= el.duration;
+      return Math.abs(el.currentTime - target) > 1/60 ? seekClip(el, target) : null;
+    }));
+  });
+  return Promise.all(jobs);
+}
 
 // Lines with mixed colours: [{t, e, html}] rebuilt every frame so seeking stays deterministic
 const TERMINALS = [];
 function terminal(el, lines){ TERMINALS.push({el:q(el),lines}); lines.forEach(l=>{ if(l.e>l.t) SFX.push({t:l.t,type:"type",dur:l.e-l.t}); }); }
 
+// Rec-chrome state, also rebuilt every frame: blinking dots and running timecodes
+const RECS = [], TIMECODES = [];
+function recDot(el, s, e){ RECS.push({el:q(el),s,e}); }
+function timecode(el, s){ TIMECODES.push({el:q(el),s}); }
+
 tl.to("#prog",{width:"100%",duration:D,ease:"none"},0);
 
 // BEGIN TIMELINE
-shot("s01",0,2.7);
-rise("#s01k",0.02,.35);
-slam("#s01a",.44,1.2);
-rise("#s01b",1.46,.35);
-tl.fromTo("#s01s",{scaleX:0},{scaleX:1,duration:.25,ease:EX},2.1); hit(2.12,.7);
+shot("s01",0,2.4);
+SFX.push({t:.05,type:"shutter"});
+recDot("#s01rec",0,2.4);
+timecode("#s01tc",0);
+rise("#s01k",.08,.35);
+slam("#s01a",.5,1.2);
 
-shot("s02",2.7,6.1,"whip");
-rise("#s02b",4.1,.35);
-rise("#s02c",4.5,.3);
-tl.fromTo("#s02hl",{scaleX:0},{scaleX:1,duration:.3,ease:EX},4.58); hit(4.6,.6);
-rise("#s02d",5.05,.3);
-drift("#s02g",2.7,6.1,{y:0},{y:-180});
+shot("s02",2.4,5.6,"glitch");
+rise("#s02b",2.62,.35);
+tl.fromTo("#s02s",{scaleX:0},{scaleX:1,duration:.25,ease:EX},4.4); hit(4.42,.7);
+drift("#s02g",2.4,5.6,{y:0},{y:-180});
 
-shot("s03",6.1,D,"zoom");
+shot("s03",5.6,D,"zoom");
 terminal("#s03pre",[
-  {t:6.3,e:7.2,html:"$ make device_a\n"},
-  {t:7.5,e:7.5,html:"<span class='err'>Segmentation fault (core dumped)</span>\n"},
+  {t:5.8,e:6.8,html:"$ make device_a\n"},
+  {t:7.1,e:7.1,html:"<span class='err'>Segmentation fault (core dumped)</span>\n"},
 ]);
-hit(7.5,1); SFX.push({t:7.5,type:"error"});
+hit(7.1,1); SFX.push({t:7.1,type:"error"});
 // END TIMELINE
 
 // Captions hide where the spoken word is already the visual: [[from, to], …]
-const NOCAP = [[0,2.7],[4.1,5.6]];
+const NOCAP = [[0,2.4],[2.55,4.7]];
+// "fireship": each word pops in on its timestamp, active word in the accent colour, mixed case.
+// "classic": dimmed ALL-CAPS phrase with one pulse and an accent box on the active word.
+const CAP_STYLE = "fireship";
 
-const capbox = q("#capbox"); let lastPhrase = -1;
+const capbox = q("#capbox"); capbox.classList.add(CAP_STYLE);
+let lastPhrase = -1;
 function renderCaptions(t){
   // words.js may still be the empty placeholder on a preview render, before transcription
   const PH = window.PHRASES || [];
@@ -168,10 +242,24 @@ function renderCaptions(t){
   const idx = PH.findIndex((p,i)=>{const n=PH[i+1];return t>=p[0].s-.05 && t<(n?Math.min(n[0].s-.05,p[p.length-1].e+.6):p[p.length-1].e+.6);});
   if(hidden || idx<0){ capbox.style.visibility="hidden"; return; }
   capbox.style.visibility="visible";
-  if(idx!==lastPhrase){ capbox.innerHTML = PH[idx].map(w=>`<span>${w.t}</span>`).join(""); lastPhrase = idx; }
-  const pulse = Math.max(0,1-(t-PH[idx][0].s)/.15);
-  capbox.style.transform = `translateY(${pulse*30}px) scale(${1+pulse*.08})`;
-  [...capbox.children].forEach((el,i)=>{const w=PH[idx][i]; el.className = t>=w.e?"on":(t>=w.s?"now":"");});
+  if(idx!==lastPhrase){ capbox.innerHTML = PH[idx].map(w=>`<span${w.k?' class="kw"':''}>${w.t}</span>`).join(""); lastPhrase = idx; }
+  if(CAP_STYLE === "classic"){
+    const pulse = Math.max(0,1-(t-PH[idx][0].s)/.15);
+    capbox.style.transform = `translateY(${pulse*30}px) scale(${1+pulse*.08})`;
+    [...capbox.children].forEach((el,i)=>{const w=PH[idx][i]; el.className = (t>=w.e?"on":(t>=w.s?"now":""))+(w.k?" kw":"");});
+    return;
+  }
+  // fireship: pure function of t — no GSAP, so seeking stays frame-exact
+  capbox.style.transform = "none";
+  [...capbox.children].forEach((el,i)=>{
+    const w = PH[idx][i], base = w.k ? " kw" : "";
+    if(t < w.s){ el.style.opacity = 0; el.style.transform = "scale(.6)"; el.className = base; return; }
+    const k = Math.min(1,(t-w.s)/.14);
+    const active = t < w.e ? 1.07 : 1;
+    el.style.opacity = Math.min(1,k*3);
+    el.style.transform = `scale(${((1+.45*(1-k)*(1-k))*active).toFixed(3)})`;
+    el.className = (t < w.e ? "now" : "") + base;
+  });
 }
 
 function renderText(t){
@@ -187,6 +275,12 @@ function renderText(t){
     let html = "";
     lines.forEach(l=>{ if(t<l.t) return; const k = l.e>l.t?Math.min(1,(t-l.t)/(l.e-l.t)):1; html += k<1?l.html.slice(0,Math.floor(l.html.length*k)):l.html; });
     el.innerHTML = html + "<span class='caret'></span>";
+  });
+  const blink = Math.floor(t*2)%2 === 0;
+  RECS.forEach(({el,s,e})=>{ el.style.visibility = (t>=s && t<e && blink) ? "visible" : "hidden"; });
+  TIMECODES.forEach(({el,s})=>{
+    const tt = Math.max(0,t-s), p2 = n => String(n).padStart(2,"0");
+    el.textContent = `${p2(Math.floor(tt/3600))}:${p2(Math.floor(tt/60)%60)}:${p2(Math.floor(tt)%60)}:${p2(Math.floor((tt%1)*30))}`;
   });
 }
 
@@ -210,6 +304,6 @@ function renderFaces(t, frame){
 }
 
 window.SFX = SFX; window.DURATION = D; window.SHOTS = SHOTS;
-window.renderAt = t => { const frame = Math.round(t*30); tl.seek(t,false); renderCaptions(t); renderText(t); renderGrain(frame); return renderFaces(t, frame); };
+window.renderAt = t => { const frame = Math.round(t*30); tl.seek(t,false); renderCaptions(t); renderText(t); renderGrain(frame); return Promise.all([renderFaces(t, frame), renderClips(t)]); };
 </script>
 </body></html>

@@ -143,6 +143,10 @@ python3 SKILL_DIR/scripts/build_captions.py "$work"
 Writes `<work>/words.js`. Never change timestamps. Tell the user about any token you could not
 resolve instead of guessing.
 
+Optionally write `<work>/keywords.json` — a JSON array of key nouns (`["Java", "Kubernetes"]`) —
+before running the command above; flagged words stay accent-coloured in the captions. One or two
+per phrase, never more.
+
 With a `script`, it is the reference for spelling: a token that differs from it goes in `fixes.json`.
 Captions follow what was said, so an ad-libbed line stays; tell the user where the take left the script.
 
@@ -171,7 +175,9 @@ times:
 ```
 
 Rules: a new shot every 1–4 seconds; a hit only on a word that deserves it; captions hidden whenever
-the spoken word *is* the visual. Find images before the table is final (Step 6).
+the spoken word *is* the visual. Shot 01 is the hook — the claim plus motion inside 3 seconds
+(a slam or the rec-card title card), never a slow setup; with a `video` the face hook fills this
+role. Find images before the table is final (Step 6).
 
 With a `video`, the first and last rows are face shots (*Face hook*, *Face sign-off*). The hook runs
 from 0 to the last word of the script's first `[FACE]` section (no script: the first sentence). The
@@ -182,9 +188,9 @@ later.
 
 ---
 
-## Step 6 — Source images
+## Step 6 — Source media
 
-Run the media finder against the image queries in `shots.json`:
+Run the media finder against the queries in `shots.json`:
 
 ```bash
 python3 SKILL_DIR/scripts/find_media.py "$work" --max-per-query 3
@@ -192,10 +198,21 @@ python3 SKILL_DIR/scripts/find_media.py "$work" --max-per-query 3
 
 It searches Wikimedia Commons and Simple Icons, downloads up to 3 candidates per query into
 `<work>/assets/`, and writes `<work>/credits.json` with source, author, and licence for every file.
+Alongside `image_query`, a shot row can carry `gif_query`, `clip_query` or `local_media` (a path or
+list of paths the user supplied); ad-hoc searches work too:
 
-**Look at every file before using it** — search results lie. If you cannot view images, list each
-candidate with its source URL and what you expect it to show, and ask the user to confirm before
-Step 7.
+```bash
+python3 SKILL_DIR/scripts/find_media.py "$work" --gif "facepalm" --clip "steam locomotive" --local ~/Memes/stonks.mp4
+```
+
+Gifs and videos are converted to muted webm so the renderer can seek them frame-exactly — never
+embed a `.gif` directly. Pick the media type by context (see *Choosing media* in
+`references/scene-blocks.md`): photos for people/artefacts, clips for process and ambience, memes
+for punchlines — one meme beat per video, two at most.
+
+**Look at every file before using it** — search results lie. For clips, also check the first and
+last second (`ffmpeg -i file.webm` for length). If you cannot view images, list each candidate with
+its source URL and what you expect it to show, and ask the user to confirm before Step 7.
 
 To search manually, use the Commons API or Simple Icons CDN directly:
 
@@ -249,8 +266,10 @@ bash SKILL_DIR/scripts/extract_face.sh <video> <work> vertical <hook-in> <hook-o
 Replace the demo shots between `BEGIN SHOTS` / `END SHOTS` (markup) and `BEGIN TIMELINE` /
 `END TIMELINE` (GSAP) with your shot list, using the helpers the template already defines. Keep the
 outer `#world` and `#cam` containers intact:
-`shot()`, `slam()`, `hit()`, `rise()`, `pop()`, `drift()`, `typer()`, `counter()`, `terminal()`, `faceCam()`,
-and the `NOCAP` ranges. Every helper that makes noise pushes its own sound cue.
+`shot()` (enters: `whip`, `whipUp`, `zoom`, `fade`, `glitch`), `slam()`, `hit()`, `rise()`, `pop()`,
+`stagger()`, `drift()`, `typer()`, `counter()`, `terminal()`, `faceCam()`, `faceBubble()`, `clip()`,
+`recDot()`, `timecode()`, and the `NOCAP` ranges and `CAP_STYLE` constant. Every helper that makes
+noise pushes its own sound cue.
 
 The display style (`.xl`) is uppercase and width-expanded; captions are condensed. Size headlines
 for the expanded width — a vertical frame fits ~6 characters at 250px.
@@ -374,6 +393,7 @@ Next: preview it on a phone, then post it with the credits in the description
 - Transcription is local. Never upload the audio.
 - One brand accent. Green only for success states, red only for errors.
 - Timelines are deterministic: no `Math.random()`, no `Date.now()`. The grain uses a seeded PRNG.
+  Videos are seeked per frame — never embed a `.gif` directly.
 - Captions never cover the element the viewer is meant to read; hide them via `NOCAP` instead.
 - Report every image credit and every invented detail (dates, labels) that isn't in the audio.
 - Never commit rendered files or `work/`.
@@ -391,6 +411,7 @@ Next: preview it on a phone, then post it with the credits in the description
 | Output file is hundreds of MB | film grain defeats compression at constant CRF | keep the `-maxrate` cap in `mix-encode.sh` |
 | Wrong or fallback font in stills | fonts not downloaded for this brand | re-run `setup.sh` with the brand file |
 | `PAGE ERROR` in render output | a script error in the timeline | fix it; GSAP only warns on missing selectors, so also check each shot visually |
+| `clip failed to load …` stops the render | the webm is missing from `assets/` or the browser can't decode it | check the `src` path against `credits.json`; re-run `find_media.py` for that query |
 | Whisper sits at low CPU for minutes | model download on first run | expected once; the model is cached afterwards |
 | Shot renders blank | `shot()` start ≥ end, or the shot id is misspelled | check the shot row's in/out times |
 | `missing face frame …` stops the render | a `faceCam()` range is wider than the extracted one | re-run `extract_face.sh` with that shot's in/out |

@@ -9,6 +9,10 @@ lines. Pick a block for each line of speech, then time it to the word.
 
 - **Cut every 1–4 seconds.** A shot held longer than ~5s needs internal motion (a push-in, a
   line drawing, a counter) or the viewer scrolls.
+- **Hook in the first 3 seconds.** Shot 01 is the claim plus motion — a slam or the rec-card
+  title card, never a slow setup. The best visuals go in the first 60 seconds.
+- **Graphics live 1–5 seconds.** A headline, card or image that stays longer is dead weight;
+  cut or animate it.
 - **Cut on the word, not the sentence.** The shot starts at the first word of its idea.
 - **Hits are punctuation.** Use `hit()` / `slam()` on the one word per shot that lands the
   point: a year, a name, a reveal, a punchline. More than ~2 hits per shot reads as noise.
@@ -25,6 +29,7 @@ lines. Pick a block for each line of speech, then time it to the word.
 | `whip` | sideways blur-whip | moving forward in the story |
 | `whipUp` | vertical whip | lists, rising energy, "then…" |
 | `zoom` | punch in from blur | reveals, new chapter |
+| `glitch` | RGB-split jitter | hard topic switches, error beats, meme energy |
 | `fade` | soft | reflective lines, setup before a reveal |
 
 ---
@@ -39,6 +44,28 @@ One huge word crashing in, everything else small around it.
 ```js
 slam("#s01a", 0.44, 1.2);
 ```
+
+### Code Report hook
+Camera-viewfinder title card for shot 01: corner brackets, blinking `● REC`, a running timecode,
+then the title word slams. The dot blink and timecode are recomputed every frame, so seeking
+stays frame-exact. Pair with a `shutter` cue on the cut.
+```html
+<section class="shot" id="s01">
+  <div class="vf"><i></i><i></i><i></i><i></i></div>
+  <div class="rec"><i id="s01rec"></i>REC</div>
+  <div class="tc" id="s01tc"></div>
+  <div class="cx xl" id="s01a" style="top:700px;font-size:280px">JAVA</div>
+</section>
+```
+```js
+shot("s01", 0, 2.4);
+SFX.push({t: .05, type: "shutter"});
+recDot("#s01rec", 0, 2.4);
+timecode("#s01tc", 0);
+slam("#s01a", .5, 1.2);
+```
+For a multi-word title (a slam montage), slam each word in its own ~0.2–0.3s shot and hide
+captions across all of them.
 
 ### Strike-through
 Kill a wrong assumption ("not built for the web").
@@ -74,8 +101,19 @@ text and pushes typing SFX. For mixed colours (red error lines), keep a line arr
 `innerHTML` in the `renderText` loop — see `terminal()` in the template.
 
 ### Photo tape-in
-A person or artefact. Tilted polaroid with a tape strip, slow push-in (`drift` on the `<img>`
-scale), a typed name tag and a stamp.
+A person or artefact. Tilted `.polaroid` with a `.tape` strip, a `.cap` name tag, a slow
+push-in (`drift` on scale) and a stamp.
+```html
+<div class="polaroid" id="s04p" style="left:230px;top:320px;width:620px;transform:rotate(-3deg)">
+  <img src="assets/gosling.jpg" alt="">
+  <div class="cap">James Gosling, 1995</div>
+  <div class="tape" style="left:180px;top:-32px"></div>
+</div>
+```
+```js
+rise("#s04p", 3.2, .5); stamp("#s04stamp", 4.2);
+drift("#s04p img", 3.2, 6.0, {scale:1},{scale:1.12});
+```
 
 ### Stamp
 Verdicts: `NOT READY`, `CONFIDENTIAL`, `SUN MICROSYSTEMS`.
@@ -107,13 +145,54 @@ One shot per word, 0.8–2s each, a `whip` and a `hit` on each: an icon or logo 
 The emotional "it's everywhere" beat.
 
 ### Logo wall
-3x3 grid of `.logo` cards popping with a stagger; nine `pop` cues.
+3x3 grid of `.logo` cards. One `stagger()` call pops them all with a `pop` cue each.
+```js
+stagger(".logo", 4.2, .09);
+```
+
+### Face bubble *(video input)*
+The speaker as a circular overlay on b-roll — terminal shots, diagrams, screen-style blocks
+(Amigoscode / Tech With Tim style). Place it inside the shot's section, bottom corner above the
+captions; its in/out must sit inside an `extract_face.sh` range, same as a face shot.
+```html
+<div class="facebubble" id="s07bub" style="right:60px;top:1120px"><img alt=""></div>
+```
+```js
+faceBubble("#s07bub>img", 12.4, 16.8);
+```
 
 ### Path / journey
 An SVG curve drawing slowly through labelled milestones — for "found its purpose along the way".
 
 ### Reflective photo
 Full-bleed photo, darkened gradient, slow drift, large sentence fading in. No hits, music ducked.
+
+### Clip b-roll (gif / video)
+Moving footage for a beat: a reaction gif, a process clip, ambient motion. `find_media.py` converts
+gifs and videos to webm; the template seeks them per frame, so they stay deterministic. Never
+embed a `.gif` directly.
+```html
+<video class="clip" id="s08v" src="assets/reaction_gif1.webm" muted preload="auto"
+       style="left:140px;top:400px;width:800px;height:600px"></video>
+```
+```js
+shot("s08", 12.0, 14.2, "whip");
+clip("#s08v", 12.0, 14.2);          // optional 4th arg: start offset seconds into the clip
+```
+The clip loops if the shot outlasts it. Full-bleed or boxed; boxed clips pair with a `pop` or a
+tilt. Keep clips inside the shot area (y = 150…1450) unless full-bleed.
+
+### Meme insert
+The funny beat: a meme still or clip dropped on the punchline for one beat only (1–2s), full
+saturation, hard cut in and out, `hit()` on entry. Use at most once or twice per video — it is a
+punchline, not a texture. A meme still is just a `.photo`; a meme gif is the clip block above.
+
+### Choosing media by context
+- Person, artefact, era → photo tape-in or era look
+- Brand, tool, ecosystem → logo wall or montage
+- Punchline, absurd claim → meme insert
+- Reaction, emotion, "everyone" → gif clip
+- Process, ambience, "how it works" → clip b-roll or terminal
 
 ### Outro
 Stacked slams for the final line, mascot bouncing in, `follow @handle`. Hold ~2.5s. With a video
@@ -158,8 +237,19 @@ times must exactly match the `extract_face.sh` range for this shot.
 
 ## Captions
 
-Captions are burned in automatically from `words.js`. Hide them whenever the spoken word *is* the
-visual (a huge headline, a counter, a terminal) by adding its time range to `NOCAP` in the template:
+Captions are burned in automatically from `words.js`. Two styles, set with `CAP_STYLE` in the
+template:
+
+- **`fireship`** (default): mixed case, each word pops in on its own timestamp, the word being
+  spoken glows in the brand accent.
+- **`classic`**: ALL-CAPS phrase, dimmed until spoken, accent box on the active word.
+
+Flag key nouns (product names, years, terms) by listing them in `<work>/keywords.json`
+(`["Java", "Kubernetes"]`) before running `build_captions.py`; flagged words stay accent-coloured.
+Use it sparingly — one or two per phrase.
+
+Hide captions whenever the spoken word *is* the visual (a huge headline, a counter, a terminal)
+by adding its time range to `NOCAP` in the template:
 
 ```js
 const NOCAP = [[1.2, 2.4], [4.1, 5.6]];
@@ -185,6 +275,7 @@ Every helper pushes its own cue into `SFX`; add extras with `SFX.push({t, type, 
 | `riser` (dur) | rising noise + tone | the 1–2s before a big reveal |
 | `down` (dur) | falling tone | crashes, failures |
 | `error` | square buzz | red error lines |
+| `shutter` | camera click | the rec-card cut |
 
 The music bed ducks under the voice automatically at mix time (`mix-encode.sh`). Use `--drop <t>`
 in `synth_audio.py` to cut the music just before the final slam — silence before the punchline is

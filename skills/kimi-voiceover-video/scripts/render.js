@@ -34,7 +34,10 @@ if (mode === 'frames' && (Number.isNaN(Number(a)) || Number.isNaN(Number(b)) || 
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
-  page.on('requestfailed', request => errors.push(`missing file ${request.url()}`));
+  // Media elements abort in-flight range requests once buffered; only real misses matter
+  page.on('requestfailed', request => {
+    if (request.failure()?.errorText !== 'net::ERR_ABORTED') errors.push(`missing file ${request.url()}`);
+  });
   await page.goto('file://' + path.resolve(htmlFile), { waitUntil: 'load' });
   if (!(await page.evaluate(() => typeof window.renderAt === 'function'))) {
     errors.forEach(message => console.error(`PAGE ERROR ${message}`));
@@ -73,7 +76,7 @@ if (mode === 'frames' && (Number.isNaN(Number(a)) || Number.isNaN(Number(b)) || 
       const found = await page.evaluate(({ id, W, H }) => {
         const section = document.getElementById(id);
         if (!section) return { missing: true, overflow: [], collide: [], visible: 0 };
-        const decorative = /gridbg|glow|scan|track|pkt|bars|strike|vhs/;
+        const decorative = /gridbg|glow|scan|track|pkt|bars|strike|vhs|hl|tape/;
         const named = el => (el.id ? '#' + el.id : '.' + ((el.getAttribute('class') || el.tagName.toLowerCase()).split(' ')[0]));
         const capbox = document.getElementById('capbox');
         const capRect = capbox && capbox.style.visibility !== 'hidden' && capbox.children.length
@@ -87,8 +90,8 @@ if (mode === 'frames' && (Number.isNaN(Number(a)) || Number.isNaN(Number(b)) || 
           if (style.visibility === 'hidden' || style.display === 'none' || parseFloat(style.opacity) < 0.05) continue;
           const rect = el.getBoundingClientRect();
           if (rect.width < 2 || rect.height < 2) continue;
-          const isText = el.children.length === 0 && el.textContent.trim().length > 0;
-          const isBlock = el.tagName === 'IMG' || /card|term|logo|stamp|badge/.test(classes);
+          const isText = [...el.children].every(c => decorative.test(c.getAttribute('class') || '')) && el.textContent.trim().length > 0;
+          const isBlock = el.tagName === 'IMG' || el.tagName === 'VIDEO' || /card|term|logo|stamp|badge/.test(classes);
           if (!isText && !isBlock) continue;
           out.visible += 1;
           // A centred .cx block spans the whole frame even when its text runs past the edge, so

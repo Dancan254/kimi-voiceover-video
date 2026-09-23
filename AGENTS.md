@@ -27,7 +27,7 @@ skills/kimi-voiceover-video/
     ├── extract_hook.py          find best 30–90s segment from long recordings
     ├── extract_segment.py       extract hook audio/video segment
     ├── plan_shots.py            heuristically drafts a shot list from words.json
-    ├── find_media.py            search Commons + Simple Icons, download candidates, write credits
+    ├── find_media.py            search Commons (images, gifs, clips) + Simple Icons, convert gif/video to webm, write credits
     ├── save_project.py          snapshot project state to project.json
     ├── load_project.py          restore project state from project.json
     ├── fill_template.py         brand + geometry + duration → work/index.html
