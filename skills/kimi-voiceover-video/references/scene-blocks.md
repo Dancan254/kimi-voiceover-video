@@ -257,6 +257,10 @@ const NOCAP = [[1.2, 2.4], [4.1, 5.6]];
 
 Never cover the element the viewer is meant to read; hide captions instead.
 
+When you toggle an element's `visibility` inside a shot (a ✓→✗ flip, a word swap), toggle it
+back before the shot ends: a child's `visibility:visible` escapes the section's `visibility:hidden`
+and bleeds into every later shot. `opacity` does not have this problem.
+
 ---
 
 ## Sound cues

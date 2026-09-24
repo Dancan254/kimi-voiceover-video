@@ -90,7 +90,7 @@ if (mode === 'frames' && (Number.isNaN(Number(a)) || Number.isNaN(Number(b)) || 
           if (style.visibility === 'hidden' || style.display === 'none' || parseFloat(style.opacity) < 0.05) continue;
           const rect = el.getBoundingClientRect();
           if (rect.width < 2 || rect.height < 2) continue;
-          const isText = [...el.children].every(c => decorative.test(c.getAttribute('class') || '')) && el.textContent.trim().length > 0;
+          const isText = [...el.children].every(c => c.tagName === 'BR' || decorative.test(c.getAttribute('class') || '')) && el.textContent.trim().length > 0;
           const isBlock = el.tagName === 'IMG' || el.tagName === 'VIDEO' || /card|term|logo|stamp|badge/.test(classes);
           if (!isText && !isBlock) continue;
           out.visible += 1;
