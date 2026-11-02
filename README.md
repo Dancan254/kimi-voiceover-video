@@ -1,10 +1,12 @@
 # Kimi Voiceover Video
 
-**A Kimi Code CLI skill that turns a voice recording into a fully edited, animated Short.**
+**A Kimi Code CLI skill that turns a voice recording or a to-camera take into a fully edited, animated Short.**
 
-Drop in a voice note. Kimi transcribes it word by word, designs a shot list, builds every scene as
-kinetic typography and motion graphics timed to your words, adds synthesized sound design and a
-music bed that ducks under your voice, and renders a 1080×1920 Short.
+Drop in a voice note or a talking-head recording. Kimi transcribes it word by word, designs a shot list,
+builds every scene as kinetic typography and motion graphics timed to your words, adds synthesized sound
+design and a music bed that ducks under your voice, and renders a 1080×1920 Short (or 1920×1080 landscape,
+or 1080×1080 square). With a to-camera take, your hook and sign-off stay on camera — the middle is animated
+over your voice. Long recording? It pulls the best 30–90s hook for you, and generates posting thumbnails.
 
 ![demo](docs/demo.gif)
 

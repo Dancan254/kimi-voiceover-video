@@ -7,7 +7,7 @@ a video, follow `skills/kimi-voiceover-video/SKILL.md` instead.
 
 A Kimi Code CLI plugin that packages one skill:
 
-- `kimi-voiceover-video` — turns a voice recording or to-camera take into an animated vertical Short.
+- `kimi-voiceover-video` — turns a voice recording or to-camera take into an animated Short (vertical, landscape, or square).
 
 ```
 skills/kimi-voiceover-video/
